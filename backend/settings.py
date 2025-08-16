@@ -126,6 +126,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),  # For global static files (if any)
     os.path.join(BASE_DIR, "inventory", "static"),  # For inventory app
 ]
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Media files (for CKEditor uploads and other media)
 MEDIA_URL = "/media/"

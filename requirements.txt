@@ -14,3 +14,4 @@ tzdata==2025.2
 gunicorn==23.0.0
 django_heroku==0.3.1
 psycopg2_binary==2.9.10
+whitenoise==6.9.0

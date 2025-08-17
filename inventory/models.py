@@ -1,7 +1,5 @@
-from django.db import models
+from django.db import models # type: ignore
 from decimal import Decimal
-from django_ckeditor_5.fields import CKEditor5Field
-
 
 class Category(models.Model):
     name = models.CharField(max_length=100)

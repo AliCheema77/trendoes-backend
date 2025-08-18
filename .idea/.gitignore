@@ -138,3 +138,6 @@ __azurite_db*__.json
 # Python cache
 __pycache__/
 *.pyc
+
+.env
+.idea/

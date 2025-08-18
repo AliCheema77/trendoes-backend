@@ -11,7 +11,15 @@ class ProductListSellView(APIView):
     throttle_classes = [ProductListSellThrottle]
 
     def get(self, request):
-        products = Product.objects.all()
+        products = Product.objects.filter(is_active=True).annotate(
+            ratingValue=Coalesce(Avg('reviews__rating'), 0.0, output_field=FloatField()),
+            totalReviews=Coalesce(Count('reviews'), 0)
+        ).select_related(
+            'category', 'subcategory', 'gender', 'brand', 'color'
+        ).prefetch_related(
+            'images',
+            Prefetch('stocks', queryset=Stock.objects.select_related('size', 'color'))
+        )
 
         # Filtering by category, brand, and price range
         category = request.query_params.get('category')

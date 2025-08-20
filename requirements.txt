@@ -1,0 +1,17 @@
+asgiref==3.9.1
+Django==5.2.4
+django-admin-interface==0.30.1
+django-ckeditor==6.7.3
+django-ckeditor-5==0.2.18
+django-colorfield==0.14.0
+django-js-asset==3.1.2
+djangorestframework==3.16.0
+pillow==11.3.0
+python-slugify==8.0.4
+sqlparse==0.5.3
+text-unidecode==1.3
+tzdata==2025.2
+gunicorn==23.0.0
+django_heroku==0.3.1
+psycopg2_binary==2.9.10
+whitenoise==6.9.0

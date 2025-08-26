@@ -20,7 +20,7 @@ from .serializers import (
 )
 
 User = get_user_model()
-
+  
 
 class RegisterView(APIView):
     permission_classes = [AllowAny]

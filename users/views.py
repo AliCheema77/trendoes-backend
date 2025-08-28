@@ -6,6 +6,7 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.conf import settings
 from invoice.models import Order
+from invoice.serializers import OrderSerializer
 
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -47,9 +48,15 @@ class UserProfileView(APIView):
     def get(self, request, *args, **kwargs):
         serializer = UserProfileSerializer(request.user)
         user_data = serializer.data
-        orders = Order.object.filter(user = request.user)
-        print(user_data, orders)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        orders = Order.objects.filter(email = request.user.email)
+        orders_serializer = OrderSerializer(orders, many=True)
+        orders_data = orders_serializer.data
+        # print(user_data, orders_data)
+        context = {
+            "user information ": user_data,
+            "order data":orders_data
+        }
+        return Response(context, status=status.HTTP_200_OK)
         
 
     

@@ -139,6 +139,7 @@ __azurite_db*__.json
 # Environment variables (root-level)
 .env
 
+
 # Media files (user uploads)
 media/
 

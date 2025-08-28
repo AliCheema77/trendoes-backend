@@ -19,6 +19,7 @@ class Order(models.Model):
     total = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User,on_delete=models.CASCADE, null=True, blank = True, related_name="orders")
+    
 
 
 class OrderItem(models.Model):

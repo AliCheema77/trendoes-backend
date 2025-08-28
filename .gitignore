@@ -135,5 +135,16 @@ __queuestorage__
 __azurite_db*__.json
 
 .python_packages
-# Ignore collected static files
-# staticfiles/
+
+# Environment variables (root-level)
+.env
+
+# Media files (user uploads)
+media/
+
+# Collected static files (can be rebuilt)
+staticfiles/
+
+# Python cache
+__pycache__/
+*.pyc

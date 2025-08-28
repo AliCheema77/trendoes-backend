@@ -21,7 +21,6 @@ class ProductListSellView(APIView):
             Prefetch('stocks', queryset=Stock.objects.select_related('size', 'color'))
         )
 
-        # Filtering by category, brand, and price range
         category = request.query_params.get('category')
         brand = request.query_params.get('brand')
         min_price = request.query_params.get('min_price')
@@ -35,7 +34,7 @@ class ProductListSellView(APIView):
             products = products.filter(price__gte=min_price)
         if max_price:
             products = products.filter(price__lte=max_price)
-        # print("inside views for product\n",products)
+
         serializer = ProductSerializer(products, many=True, context={'request': request})
 
         return Response(serializer.data, status=status.HTTP_200_OK)

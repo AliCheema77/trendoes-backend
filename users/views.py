@@ -5,6 +5,7 @@ from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.conf import settings
+from invoice.models import Order
 
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -42,24 +43,16 @@ class RegisterView(APIView):
 class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
+
     def get(self, request, *args, **kwargs):
         serializer = UserProfileSerializer(request.user)
+        user_data = serializer.data
+        orders = Order.object.filter(user = request.user)
+        print(user_data, orders)
         return Response(serializer.data, status=status.HTTP_200_OK)
+        
 
-    def put(self, request, *args, **kwargs):
-        serializer = UserProfileSerializer(request.user, data=request.data, partial=False)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def patch(self, request, *args, **kwargs):
-        serializer = UserProfileSerializer(request.user, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    
 
 class PasswordResetRequestView(APIView):
     permission_classes = [AllowAny]

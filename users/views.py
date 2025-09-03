@@ -18,13 +18,15 @@ from .serializers import (
     RegisterSerializer,
     UserProfileSerializer,
     PasswordResetRequestSerializer,
-    PasswordResetConfirmSerializer
+    PasswordResetConfirmSerializer,
+    UserResponseSerializer
 )
 
 User = get_user_model()
   
 
 class RegisterView(APIView):
+    '''singup view'''
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
@@ -33,7 +35,7 @@ class RegisterView(APIView):
             user = serializer.save()
             refresh = RefreshToken.for_user(user)
             return Response({
-                "user": serializer.data,
+                "user": UserResponseSerializer(user).data,
                 "refresh": str(refresh),
                 "access": str(refresh.access_token),
                 "msg": "User Registered Successfully"

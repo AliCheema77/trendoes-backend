@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product, Image, Stock, Category, SubCategory, Color,Size, Gender, Brand
+from .models import Product, Image, Stock, Category, SubCategory, Color,Size, Gender, Brand,Review
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -93,17 +93,17 @@ class ProductSerializer(serializers.ModelSerializer):
                 "color":{
                     "id": stock.color.id,
                     "name": stock.color.name,
-                    "hexCode":stock.color.rgb_code
+                    "HEX":stock.color.rgb_code
                 },
-                "quanitity": stock.quantity
+                "quantity": stock.quantity
             })
         return list(size_map.values())
     def get_pricing(self, obj):
         return{
-            "actuall_price": float(obj.actual_price),
+            "actual_price": float(obj.actual_price),
             "discountPercent":float(obj.discount_percent),
             "finalPrice":float(obj.price),
-            "currecy":"PKR"
+            "currency":"PKR"
         }
     
     def get_meta(self, obj):
@@ -119,3 +119,9 @@ class ProductSerializer(serializers.ModelSerializer):
             'id', 'name', 'category', 'subcategory', 'gender', 'brand', 'color',
             'description', 'pricing', 'images', 'stocks', 'meta', 'ratingValue', 'totalReviews', "total_sold",
         ]
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = "__all__"

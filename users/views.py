@@ -46,14 +46,12 @@ class RegisterView(APIView):
 class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
-
     def get(self, request, *args, **kwargs):
         serializer = UserProfileSerializer(request.user)
         user_data = serializer.data
         orders = Order.objects.filter(email = request.user.email)
         orders_serializer = OrderSerializer(orders, many=True)
         orders_data = orders_serializer.data
-        # print(user_data, orders_data)
         context = {
             "user information ": user_data,
             "order data":orders_data

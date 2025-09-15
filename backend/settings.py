@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django_ckeditor_5',
     "invoice.apps.InvoiceConfig", 
     "users",
+    "django_filters",
 
 ]
 
@@ -158,10 +159,16 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.AllowAny",  # default = public
+    "DEFAULT_PERMISSION_CLASSES":[
+        "rest_framework.permissions.AllowAny",
     ],
+    "DEFAULT_FILTER_BACKENDS":[
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.OrderingFilter",
+        "rest_framework.filters.SearchFilter",
+    ]
 }
+
 
 # Email Configuration (for development)
 # This will print emails to the console where you run `manage.py runserver`

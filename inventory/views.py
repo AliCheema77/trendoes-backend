@@ -3,45 +3,36 @@ from django.db.models.functions import Coalesce
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics, status
+from django_filters.rest_framework import DjangoFilterBackend
 from .models import Product, Category, SubCategory, Color, Size, Gender, Brand, Image, Stock, Review
 from .serializers import ProductSerializer, ReviewSerializer
 from .throttles import ProductListSellThrottle, ProductDetailThrottle
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
+from .filters import ProductFilter
 
 
-class ProductListSellView(APIView):
+class ProductListSellView(generics.ListAPIView):
+
+    
     throttle_classes = [ProductListSellThrottle]
+    queryset = Product.objects.filter(is_active=True).annotate(
+        ratingValue=Coalesce(Avg('reviews__rating'), 4.5, output_field=FloatField()),
+        totalReviews=Coalesce(Count('reviews'), 600)
+    ).select_related(
+        'category', 'subcategory', 'gender', 'brand', 'color'
+    ).prefetch_related(
+        'images',
+        Prefetch('stocks', queryset=Stock.objects.select_related('size', 'color'))
+    )
+    serializer_class = ProductSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = ProductFilter
 
     @method_decorator(cache_page(300))
-    def get(self, request):
-        products = Product.objects.filter(is_active=True).annotate(
-            ratingValue=Coalesce(Avg('reviews__rating'), 4, output_field=FloatField()),
-            totalReviews=Coalesce(Count('reviews'), 600)
-        ).select_related(
-            'category', 'subcategory', 'gender', 'brand', 'color'
-        ).prefetch_related(
-            'images',
-            Prefetch('stocks', queryset=Stock.objects.select_related('size', 'color'))
-        )
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
 
-        category = request.query_params.get('category')
-        brand = request.query_params.get('brand')
-        min_price = request.query_params.get('min_price')
-        max_price = request.query_params.get('max_price')
-        
-        if category:
-            products = products.filter(category=category)
-        if brand:
-            products = products.filter(brand=brand)
-        if min_price:
-            products = products.filter(price__gte=min_price)
-        if max_price:
-            products = products.filter(price__lte=max_price)
-
-        serializer = ProductSerializer(products, many=True, context={'request': request})
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class ProductDetailView(generics.RetrieveAPIView):
     
@@ -80,4 +71,3 @@ class ProudctReviewView(APIView):
 
         
         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
-        

@@ -10,6 +10,8 @@ from .throttles import ProductListSellThrottle, ProductDetailThrottle
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 from .filters import ProductFilter
+from rest_framework.pagination import PageNumberPagination
+from .pagination import ProductListPagination
 
 
 class ProductListSellView(generics.ListAPIView):
@@ -18,16 +20,18 @@ class ProductListSellView(generics.ListAPIView):
     throttle_classes = [ProductListSellThrottle]
     queryset = Product.objects.filter(is_active=True).annotate(
         ratingValue=Coalesce(Avg('reviews__rating'), 4.5, output_field=FloatField()),
-        totalReviews=Coalesce(Count('reviews'), 600)
+        totalRev=Coalesce(Count('reviews'), 600)
     ).select_related(
         'category', 'subcategory', 'gender', 'brand', 'color'
     ).prefetch_related(
         'images',
         Prefetch('stocks', queryset=Stock.objects.select_related('size', 'color'))
     )
+    # print(list(queryset.values()))
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = ProductFilter
+    pagination_class = ProductListPagination
 
     @method_decorator(cache_page(300))
     def dispatch(self, *args, **kwargs):

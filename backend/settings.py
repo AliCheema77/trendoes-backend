@@ -166,10 +166,11 @@ REST_FRAMEWORK = {
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.OrderingFilter",
         "rest_framework.filters.SearchFilter",
-    ]
+    ],
+    "DEFAULT_PAGINATION_CLASS" : "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE":10,
+    
 }
-
-
 # Email Configuration (for development)
 # This will print emails to the console where you run `manage.py runserver`
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
